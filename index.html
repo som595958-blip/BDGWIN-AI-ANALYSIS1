@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BDG WIN AI Analyzer</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080d19;color:white;
+ font-family:Arial,sans-serif;padding:20px;
+}
+header{text-align:center;padding:20px}
+h1{color:#00e5a0;font-size:27px}
+.card{
+ background:#141e30;padding:20px;
+ border-radius:16px;margin:16px 0;
+ border:1px solid #263650;
+}
+h2{color:#00e5a0;font-size:19px}
+input,button{
+ width:100%;padding:14px;margin-top:12px;
+ border-radius:10px;border:0;font-size:16px;
+}
+input{background:#263650;color:white}
+button{
+ background:#00d99a;color:#06140f;
+ font-weight:bold;
+}
+.result{
+ font-size:28px;text-align:center;
+ color:#00e5a0;font-weight:bold;
+ padding:20px;
+}
+.small{color:#aab8cc;font-size:13px}
+li{padding:8px;color:#cbd5e1}
+</style>
+</head>
+<body>
+<header>
+<h1>⚡ BDG WIN</h1>
+<p>AI NUMBER ANALYZER</p>
+<p class="small">Smart Result Tracking Dashboard</p>
+</header>
+
+<div class="card">
+<h2>Enter Previous Result</h2>
+<input id="number" type="number"
+min="0" max="9" placeholder="Enter number (0-9)">
+<button onclick="addResult()">ADD RESULT</button>
+</div>
+
+<div class="card">
+<h2>Number Analysis</h2>
+<div class="result" id="analysis">--</div>
+<p id="details" class="small">
+Enter results to see number frequency.
+</p>
+</div>
+
+<div class="card">
+<h2>Result History</h2>
+<ul id="history"></ul>
+<button onclick="clearData()">CLEAR HISTORY</button>
+</div>
+
+<div class="card">
+<h2>About Analyzer</h2>
+<p class="small">
+This app tracks previous numbers and calculates
+their frequency. It does not predict future
+results or guarantee winning numbers.
+</p>
+</div>
+
+<script>
+let data=[];
+
+function addResult(){
+ let input=document.getElementById("number");
+ let n=Number(input.value);
+
+ if(input.value==="" || !Number.isInteger(n)
+ || n<0 || n>9){
+ alert("Enter a number between 0 and 9");
+ return;
+ }
+
+ data.unshift(n);
+ input.value="";
+ update();
+}
+
+function update(){
+ let counts=Array(10).fill(0);
+ data.forEach(n=>counts[n]++);
+
+ if(data.length===0){
+ document.getElementById("analysis").innerText="--";
+ document.getElementById("details").innerText=
+ "Enter results to see number frequency.";
+ }else{
+ let max=Math.max(...counts);
+ let common=counts.map((v,i)=>v===max?i:null)
+ .filter(v=>v!==null);
+
+ document.getElementById("analysis").innerText=
+ common.join(", ");
+
+ document.getElementById("details").innerText=
+ "Most frequent recorded number(s): "+
+ common.join(", ")+
+ " | Total entries: "+data.length;
+ }
+
+ document.getElementById("history").innerHTML=
+ data.slice(0,30).map((n,i)=>
+ "<li>#"+(i+1)+" — "+n+"</li>"
+ ).join("");
+}
+
+function clearData(){
+ if(confirm("Clear all history?")){
+ data=[];
+ update();
+ }
+}
+</script>
+</body>
+</html>
